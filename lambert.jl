@@ -7,6 +7,20 @@
 
 using LinearAlgebra
 
+function test_simple()
+    R1 = [6378, 0, 0]
+    R2 = [0, 6378, 0]
+    dt = 2*3600
+    mu = 3.986e5
+    dir = 0
+
+    @time lambert_battin(R1, R2, dt, mu, dir)
+
+    v1, v2 = lambert_battin(R1, R2, dt+1, mu, dir)
+    println(v1)
+    println(v2)
+end
+
 function lambert_battin(R1, R2, dt, μ, dir)
     # Inputs
     #   R1 - First radius vector (km)
@@ -282,11 +296,3 @@ function battin_K(u)
 
     return f
 end
-
-R1 = [6378, 0, 0]
-R2 = [0, 6378, 0]
-dt = 2*3600
-mu = 3.986e5
-dir = 0
-
-@time lambert_battin(R1, R2, dt, mu, dir)
