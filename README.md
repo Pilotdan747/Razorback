@@ -4,17 +4,15 @@ Author: Daniel Owen (daniel.owen@ku.edu)
 
 The main purpose of this code is to collect functions and data structures as well as driver and analysis scripts for modeling and solving the multiple gravity assist problem. This research is focused on comparing both optimization algorithms and problem formulation to gain further insight into the problem. 
 
-For further information of this type of work and where the idea originated please see my paper:
-    INSERT REFERENCE AND LINK
-
-or see some similar work:
-    INSERT 3 - 5 references
+For further information of this type of work and where the idea originated please see my paper: 
+    
+    Owen, D., Rhodes, Z., Kaplinger, B., "A Uranus Mission Design Demonstrating a Simulated Annealing Algorithm", AAS/AIAA Spaceflight Mechanics Meetings, AAS 23-371
 
 # Current Development
 This is a brand-new repository (May 14, 2024) with the current goal to set up the repo and development environments and begin porting code over from previous work
 
 # Conda
-- Python
+- python 3.12
 - plotly
 - numpy
 - scipy
