@@ -4,8 +4,8 @@
 # Edited: May 14, 2024
 # Version: 0.1
 
-include("lambert.jl")
-include("planets.jl")
+include("../razorback/lambert.jl")
+include("../razorback/planets.jl")
 
 dt1 = 30*86400
 dt2 = 30*86400

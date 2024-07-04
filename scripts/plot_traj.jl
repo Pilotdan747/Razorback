@@ -9,7 +9,7 @@
 # Kepler to prop arc
 # Plot arcs
 
-include("planets.jl")
+include("../razorback/planets.jl")
 
 function plot_planet!(plot, planet)
     a = sma[planet]
