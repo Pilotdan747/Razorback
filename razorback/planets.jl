@@ -1,8 +1,8 @@
 # Initial test at propataging planet orbits. Simple circles fornow
 # Author: Daniel Owen
 # Created: May 14, 2024
-# Edited: May 14, 2024
-# Version: 0.1
+# Edited: July 5, 2024
+# Version: 0.2
 
 function test_planet()
     R1, V1 = get_state("Earth", 0)
@@ -13,6 +13,15 @@ function test_planet()
     println(R2)
     println(R3)
 end
+
+ids = Dict(1 => "Mercury",
+           2 => "Venus",
+           3 => "Earth",
+           4 => "Mars",
+           5 => "Jupiter",
+           6 => "Saturn",
+           7 => "Uranus",
+           8 => "Nepture")
 
 sma = Dict("Mercury" => 0.38709927, 
            "Venus" => 0.72333566, 

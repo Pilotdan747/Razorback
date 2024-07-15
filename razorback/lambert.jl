@@ -75,9 +75,9 @@ function lambert_battin(R1, R2, dt, μ, dir)
         h1 = (l + x)^2*(1 + 3*x + z)/den
         h2 = m*(x - l + z)/den
         B = 0.25*27*h2/(1 + h1)^3
-        u = 0.5*B/(1 + sqrt(1 + B))
+        u = 0.5*B/(1 + sqrt(complex(1 + B)))
         K = battin_K(u)
-        y = (1 + h1)/3*(2 + sqrt(1 + B)/(1 + 2*u*K^2))
+        y = (1 + h1)/3*(2 + sqrt(complex(1 + B))/(1 + 2*u*K^2))
         x = sqrt(0.25*(1 - l)^2 + m/y^2) - 0.5*(1 + l)
         if (abs(x - x0) < 1e-12)
             break
@@ -86,7 +86,7 @@ function lambert_battin(R1, R2, dt, μ, dir)
         end
     end
 
-    a = μ*dt^2/16/r0p^2/x/y^2
+    a = real(μ*dt^2/16/r0p^2/x/y^2)
 
     if (a > 0)
         b = 2*asin(sqrt(0.5*(s - c)/a))
