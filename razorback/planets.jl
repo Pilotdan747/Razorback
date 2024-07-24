@@ -45,7 +45,7 @@ ecc = Dict("Mercury" => 0.205631752,
            "Venus" => 0.006771882, 
            "Earth" => 0.016708617, 
            "Mars" => 0.093400620,
-           "Jupiter" => 0048494851,
+           "Jupiter" => 0.048494851,
            "Saturn" => 0.055508622,
            "Uranus" => 0.046295898,
            "Nepture" => 0.008988095)
@@ -142,4 +142,4 @@ function get_state_circ(planet, time)
     return (R, V)
 end
 
-test_planet()
+# test_planet()

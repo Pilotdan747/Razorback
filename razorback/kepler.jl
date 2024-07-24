@@ -34,7 +34,12 @@ function state_to_elements(R, V, μ)
         ω = 2*π - ω
     end
 
-    θ = acos(dot(E, R)/e/r)
+    try
+        θ = acos(dot(E, R)/e/r)
+    catch DomainError
+        θ = acos(1.0)
+    end
+
     if dot(R, V) < 0
         θ = 2*π - θ
     end
