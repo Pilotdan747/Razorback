@@ -1,7 +1,7 @@
 # Library functions for setting up MGA optimization problem
 # Author: Daniel Owen
 # Created: July 5, 2024
-# Edited: July 6, 2024
+# Edited: July 23, 2024
 # Version: 0.1
 
 include("lambert.jl")
@@ -26,7 +26,7 @@ function cost(data, print)
     j_depart = V∞_arr[1]
     j_arrive = V∞_arr[end]
 
-    j = j_balistic + j_depart + j_arrive
+    j = 100*j_balistic + j_depart + j_arrive
 
     if print
         println("J: $j   Ballistic: $j_balistic   Departure: $j_depart   Arrival: $j_arrive")
@@ -40,8 +40,8 @@ struct mga_data
     traj_velocities
 end
 
-function generate_mga_data(dt_vals, planet)
-    times = [0.0]
+function generate_mga_data(init_time, dt_vals, planet)
+    times = [init_time]
     for (i, dt) in enumerate(dt_vals)
         t = times[i] + dt
         push!(times, t)
@@ -50,7 +50,7 @@ function generate_mga_data(dt_vals, planet)
     pos_vecs = []
     plan_vels = []
     for (i, time) in enumerate(times)
-        R, V = get_state(planet[i], time)
+        R, V = get_state_circ(planet[i], time)
         push!(pos_vecs, R)
         push!(plan_vels, V)
     end
