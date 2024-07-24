@@ -1,11 +1,28 @@
 # Library functions for setting up MGA optimization problem
 # Author: Daniel Owen
 # Created: July 5, 2024
-# Edited: July 23, 2024
-# Version: 0.1
+# Edited: July 24, 2024
+# Version: 0.2
 
 include("lambert.jl")
 include("planets.jl")
+
+function turning_angle(V_in, V_out, planet)
+    Re = R_eq[planet]
+    μ = plan_μ[planet]
+
+    turn = 0
+    try
+        turn = acos(dot(V_in, V_out)/norm(V_in)/norm(V_out))
+    catch DomainError
+        turn = acos(1.0)
+    end
+
+    max_turn = 2*asin(1/(1 + Re*norm(V_in)^2/μ))
+
+    angle_diff = turn - max_turn
+    return max(angle_diff, 0.0)
+end
 
 function cost(data, print)
     V∞_arr = []
@@ -19,17 +36,22 @@ function cost(data, print)
     end
 
     j_balistic = 0
-    for i in 2:2:length(data.traj_velocities) -1
+    j_turn = 0
+    for i in 2:2:length(data.traj_velocities) - 1
+        planet_idx = convert(Int32, (floor((i + 1)/2)))
+        planet = data.itinerary[planet_idx]
+
         j_balistic += abs(V∞_arr[i+1] - V∞_arr[i])
+        j_turn += turning_angle(V∞_arr[i+1], V∞_arr[i], planet)
     end
 
     j_depart = V∞_arr[1]
     j_arrive = V∞_arr[end]
 
-    j = 100*j_balistic + j_depart + j_arrive
+    j = 100*j_balistic + 100*j_turn + j_depart + j_arrive
 
     if print
-        println("J: $j   Ballistic: $j_balistic   Departure: $j_depart   Arrival: $j_arrive")
+        println("J: $j   Ballistic: $j_balistic   Turn: $j_turn     Departure: $j_depart   Arrival: $j_arrive")
     end
     return j
 end
@@ -38,6 +60,7 @@ struct mga_data
     position_vectors
     planet_velocities
     traj_velocities
+    itinerary
 end
 
 function generate_mga_data(init_time, dt_vals, planet)
@@ -50,7 +73,8 @@ function generate_mga_data(init_time, dt_vals, planet)
     pos_vecs = []
     plan_vels = []
     for (i, time) in enumerate(times)
-        R, V = get_state_circ(planet[i], time)
+        # R, V = get_state_circ(planet[i], time)
+        R, V = get_state_kep(planet[i], time)
         push!(pos_vecs, R)
         push!(plan_vels, V)
     end
@@ -62,5 +86,5 @@ function generate_mga_data(init_time, dt_vals, planet)
         push!(traj_vels, V2)
     end
     
-    return mga_data(pos_vecs, plan_vels, traj_vels)
+    return mga_data(pos_vecs, plan_vels, traj_vels, planet)
 end

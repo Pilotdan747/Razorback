@@ -1,8 +1,8 @@
 # Initial test at basic kepler's problem functions (prop and state <=> element)
 # Author: Daniel Owen
 # Created: May 23, 2024
-# Edited: July 23, 2024
-# Version: 0.1
+# Edited: July 24, 2024
+# Version: 0.2
 
 using LinearAlgebra
 

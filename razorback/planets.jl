@@ -1,8 +1,8 @@
 # Initial test at propataging planet orbits. Simple circles fornow
 # Author: Daniel Owen
 # Created: May 14, 2024
-# Edited: July 5, 2024
-# Version: 0.2
+# Edited: July 24, 2024
+# Version: 0.3
 
 include("kepler.jl")
 
@@ -85,6 +85,24 @@ long_true = Dict("Mercury" => 252.25090551,
                  "Saturn" => 50.07747138,
                  "Uranus" => 314.05500511,
                  "Nepture" => 304.34866548)
+
+plan_μ = Dict("Mercury" => 2.2032e4, 
+              "Venus" => 3.257e5, 
+              "Earth" => 3.986004415e5, 
+              "Mars" => 4.305e4, 
+              "Jupiter" => 1.268e8, 
+              "Saturn" => 3.794e7, 
+              "Uranus" => 5.794e6, 
+              "Neptune" => 6.809e6)
+
+R_eq = Dict("Mercury" => 2439.0, 
+            "Venus" => 6052.0, 
+            "Earth" => 6378.1363, 
+            "Mars" => 3397.2, 
+            "Jupiter" => 71492.0, 
+            "Saturn" => 60268.0, 
+            "Uranus" => 25559.0, 
+            "Neptune" => 24764.0)
 
 μ_sun = 1.32712440e11;
 AU = 149597870.7
