@@ -13,8 +13,8 @@ function optum_wrapper(x)
     dt_vals = x[2:5]
     
     planets = ["Earth"]
-    for x in x[6:end]
-        planet = ids[Int(round(x))]
+    for id in x[6:end]
+        planet = ids[Int(round(id))]
         push!(planets, planet)
     end
     push!(planets, "Uranus")
@@ -39,19 +39,19 @@ function min_data(x)
 end
 
 function main()
-    low_bounds = [0; 30*86400*ones(4); 2*ones(3)]
-    up_bounds = [25*365.25*86400; 10000*86400*ones(4); 8*ones(3)]
+    low_bounds = [25*365.25*86400; 30*86400*ones(4); 2*ones(3)]
+    up_bounds = [35*365.25*86400; 10000*86400*ones(4); 7*ones(3)]
 
     bounds = boxconstraints(lb = low_bounds, ub = up_bounds)
     # println(bounds)
 
-    options = Options(iterations = 2500, f_calls_limit = 1e7, debug=true)
-    # alg = PSO(N = 2500, options = options)
-    # alg = SA(x_initial = (up_bounds + low_bounds)/2, N = 2500, options = options)
-    # alg = DE(N = 2500, options = options)
+    options = Options(iterations = 1000, f_calls_limit = 1e7, debug = true)
+    # alg = PSO(N = 100, options = options)
+    # alg = SA(x_initial = (up_bounds + low_bounds)/2, N = 1000, options = options)
+    # alg = DE(N = 1000, options = options)
     # alg = ABC(N = 2500, options = options)
     # alg = GA(N = 2500) # Broken
-    alg = ECA(N = 2500, options = options)
+    alg = ECA(N = 100, options = options)
 
 
     # f(x) = x^2 + sin(x)
