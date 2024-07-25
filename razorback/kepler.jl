@@ -138,7 +138,7 @@ function kep_E(M, e)
     for i in 1:100
         E = E_old + (M - E_old + e*sin(E_old))/(1 - e*cos(E_old))
         
-        if E - E_old < 1e-9
+        if abs(E - E_old) < 1e-9
             break
         end
         
