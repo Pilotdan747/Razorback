@@ -1,13 +1,9 @@
 # Initial test at plotting a solution to the MGA problem
 # Author: Daniel Owen
 # Created: May 23, 2024
-# Edited: May 23, 2024
+# Edited: July 24, 2024
 # Version: 0.1
 
-# Prop planets and plot
-# Load inital state of each arc
-# Kepler to prop arc
-# Plot arcs
 
 using PlotlyJS
 
@@ -26,17 +22,7 @@ function plot_planet!(plot, planet)
         push!(states, r)
     end
 
-    # add each state to a 3d plot
-    # I think plotly needs it as a trace object?
-
 end
-
-# solution = []
-# arc["dT"] = 0
-# arc["R"] = []
-# arc["V"] = []
-
-# solution[1] = arc
 
 function plot_solution!(plot, solution)
     for arc in solution
