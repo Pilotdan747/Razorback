@@ -61,6 +61,7 @@ struct mga_data
     planet_velocities
     traj_velocities
     itinerary
+    dt_vals
 end
 
 function generate_mga_data(init_time, dt_vals, planet)
@@ -86,5 +87,5 @@ function generate_mga_data(init_time, dt_vals, planet)
         push!(traj_vels, V2)
     end
     
-    return mga_data(pos_vecs, plan_vels, traj_vels, planet)
+    return mga_data(pos_vecs, plan_vels, traj_vels, planet, dt_vals)
 end

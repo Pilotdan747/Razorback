@@ -148,19 +148,35 @@ function kep_E(M, e)
     return E_old
 end
 
+function kep_H(M, e)
+end
+
 function propogate(R, V, μ, dT)
     OE = state_to_elements(R, V, μ)
-    T = 2*π/sqrt(μ)*OE["a"]^(3/2)
-
     e = OE["e"]
-    Ei = 2*atan(sqrt((1 - e)/(1 + e))*tan(OE["θ"]/2))
-    Mi = Ei - e*sin(Ei)
-    Mf = Mi + dT*2*pi/T
+
+    if OE["a"] < 0
+        n = 2*sqrt(μ/(-1*OE["a"]^3))
+        Hi = acosh((e + cos(OE["θ"]))/(1 + e*cos(OE["θ"])))
+        Mi = e*sinh(Hi) - Hi
+    else
+        n = 2*sqrt(μ/OE["a"]^3)
+        Ei = 2*atan(sqrt((1 - e)/(1 + e))*tan(OE["θ"]/2))
+        Mi = Ei - e*sin(Ei)
+    end
+
+    Mf = Mi + dT*n
     Mf = mod(Mf, 2*π)
 
-    Ef = kep_E(Mf, e)
+    if OE["a"] < 0
+        Hf = kep_H(Mf, e)
 
-    OE["θ"] = 2*atan(sqrt((1 + e)/(1 - e))*tan(Ef/2))
-    
+        OE["θ"] = 1
+    else
+        Ef = kep_E(Mf, e)
+
+        OE["θ"] = 2*atan(sqrt((1 + e)/(1 - e))*tan(Ef/2))
+    end
+
     return elements_to_state(OE, μ)
 end
