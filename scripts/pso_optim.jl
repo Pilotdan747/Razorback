@@ -46,13 +46,13 @@ function main()
     bounds = boxconstraints(lb = low_bounds, ub = up_bounds)
     # println(bounds)
 
-    options = Options(iterations = 1000, f_calls_limit = 1e7, debug = true)
-    # alg = PSO(N = 100, options = options)
+    options = Options(iterations = 250, f_calls_limit = 1e7, debug = true)
+    alg = PSO(N = 100, options = options)
     # alg = SA(x_initial = (up_bounds + low_bounds)/2, N = 1000, options = options)
     # alg = DE(N = 1000, options = options)
     # alg = ABC(N = 2500, options = options)
     # alg = GA(N = 2500) # Broken
-    alg = ECA(N = 100, options = options)
+    # alg = ECA(N = 100, options = options)
 
 
     # f(x) = x^2 + sin(x)
