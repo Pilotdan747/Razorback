@@ -1,8 +1,7 @@
 # Early implementation of PSO optimizer on MGA problem
 # Author: Daniel Owen
 # Created: July 5, 2024
-# Edited: July 23, 2024
-# Version: 0.1
+# Edited: July 30, 2024
 
 using Metaheuristics
 

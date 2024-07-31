@@ -2,7 +2,6 @@
 # Author: Daniel Owen
 # Created: May 14, 2024
 # Edited: July 24, 2024
-# Version: 0.3
 
 include("kepler.jl")
 

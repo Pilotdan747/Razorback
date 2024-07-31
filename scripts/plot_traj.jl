@@ -1,9 +1,7 @@
 # Initial test at plotting a solution to the MGA problem
 # Author: Daniel Owen
 # Created: May 23, 2024
-# Edited: July 24, 2024
-# Version: 0.1
-
+# Edited: July 30, 2024
 
 using PlotlyJS
 

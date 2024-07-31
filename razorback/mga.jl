@@ -2,7 +2,6 @@
 # Author: Daniel Owen
 # Created: July 5, 2024
 # Edited: July 24, 2024
-# Version: 0.2
 
 include("lambert.jl")
 include("planets.jl")

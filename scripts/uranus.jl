@@ -2,7 +2,6 @@
 # Author: Daniel Owen
 # Created: May 14, 2024
 # Edited: July 5, 2024
-# Version: 0.2
 
 include("../razorback/lambert.jl")
 include("../razorback/planets.jl")

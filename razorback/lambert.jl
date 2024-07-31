@@ -2,7 +2,6 @@
 # Author: Daniel Owen
 # Created: May 14, 2024
 # Edited: May 14, 2024
-# Version: 0.1
 # TODO make eps a const -> maybe 1e-12
 
 using LinearAlgebra
