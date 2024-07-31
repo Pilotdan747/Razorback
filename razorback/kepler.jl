@@ -154,19 +154,33 @@ end
 function propogate(R, V, μ, dT)
     OE = state_to_elements(R, V, μ)
     e = OE["e"]
+    θ = OE["θ"]
 
     if OE["a"] < 0
-        n = 2*sqrt(μ/(-1*OE["a"]^3))
-        Hi = acosh((e + cos(OE["θ"]))/(1 + e*cos(OE["θ"])))
+        n = sqrt(μ/(-1*OE["a"]^3))
+        Hi = acosh((e + cos(θ))/(1 + e*cos(θ)))
         Mi = e*sinh(Hi) - Hi
     else
-        n = 2*sqrt(μ/OE["a"]^3)
-        Ei = 2*atan(sqrt((1 - e)/(1 + e))*tan(OE["θ"]/2))
+        n = sqrt(μ/OE["a"]^3)
+        Ei = 2*atan(sqrt((1 - e)/(1 + e))*tan(θ/2))
         Mi = Ei - e*sin(Ei)
     end
 
+    special_case = OE["special_case"]
+    if special_case != "none"
+        if special_case == "circ_eq"
+            θ = OE["λ true"]
+            OE["λ true"] = θ + n*dT
+            return elements_to_state(OE, μ)
+        elseif special_case == "circ_inc"
+            θ = OE["u"]
+            OE["u"] = θ + n*dT
+            return elements_to_state(OE, μ)
+        end
+    end
+
     Mf = Mi + dT*n
-    Mf = mod(Mf, 2*π)
+    # Mf = mod(Mf, 2*π)
 
     if OE["a"] < 0
         Hf = kep_H(Mf, e)

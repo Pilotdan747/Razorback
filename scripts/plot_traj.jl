@@ -9,6 +9,7 @@ using PlotlyJS
 
 include("../razorback/planets.jl")
 include("../razorback/kepler.jl")
+include("../razorback/lambert.jl")
 
 function plot_planet!(fig, planet)
     a = sma[planet]*AU
@@ -38,15 +39,13 @@ function plot_solution!(fig, solution)
 
     for i = 1:length(itinerary) - 1
         r = pos_vec[i]
-        v = vel_vec[i]
+        v = vel_vec[2*i - 1] # Account for multiple both Vel's added per arc
         dT = dt_vals[i]
 
         planet = itinerary[i]
         next_planet = itinerary[i + 1]
 
-
         name = "$planet to $next_planet"
-        println(name)
 
         time_range = range(0, dT, step=86400)
 
@@ -102,13 +101,58 @@ function simple_plot()
     # end
 end
 
-# simple_plot()
-fig = plot()
-planets = ["Venus", "Earth", "Jupiter"]
+function plot_lambert()
+    OE = Dict("a" => 6778, "e" => 0, "i" => 0, "Ω" => 0, "ω" => 0, "θ" => 0, "λ true" => 0, "special_case" => "circ_eq")
+    OE2 = Dict("a" => 7378, "e" => 0, "i" => 0, "Ω" => 0, "ω" => 0, "θ" => 0, "λ true" => 0, "special_case" => "circ_eq")
+    R, V = elements_to_state(OE, 3.986e5)
+    R2, V2 = elements_to_state(OE2, 3.986e5)
 
-for p in planets
-    plot_planet!(fig, p)
+    N = 1000
+    t_vals = range(0, 6*3600, N)
+
+    X_arr = []
+    Y_arr = []
+    Z_arr = []
+    X_arr2 = []
+    Y_arr2 = []
+    Z_arr2 = []
+    for t in t_vals
+        R_t, V_t = propogate(R, V, 3.986e5, t)
+        R_t2, V_t2 = propogate(R2, V2, 3.986e5, t)
+        
+        push!(X_arr, R_t[1])
+        push!(Y_arr, R_t[2])
+        push!(Z_arr, R_t[3])
+
+        push!(X_arr2, R_t2[1])
+        push!(Y_arr2, R_t2[2])
+        push!(Z_arr2, R_t2[3])
+    end
+    OE2_pri = Dict("a" => 7378, "e" => 0, "i" => 0, "Ω" => 0, "ω" => 0, "θ" => 0, "λ true" => π/2, "special_case" => "circ_eq")
+    R2_pri, V2_pri = elements_to_state(OE2_pri, 3.986e5)
+    V1_lam, V2_lam = lambert_battin(R, R2_pri, 90*60, 3.986e5, 0)
+
+    t_vals_lam = range(0, 90*60, N)
+    X_arr3 = []
+    Y_arr3 = []
+    Z_arr3 = []
+    for t in t_vals_lam
+        R_lam, V_lam = propogate(R, V1_lam, 3.986e5, t)
+        
+        push!(X_arr3, R_lam[1])
+        push!(Y_arr3, R_lam[2])
+        push!(Z_arr3, R_lam[3])
+    end
+
+    trace1 = scatter3d(x=X_arr, y=Y_arr, z=Z_arr, mode="lines", name="Orbit 1")
+    trace2 = scatter3d(x=X_arr2, y=Y_arr2, z=Z_arr2, mode="lines", name="Orbit 2")
+    trace3 = scatter3d(x=X_arr3, y=Y_arr3, z=Z_arr3, mode="lines", name="Transfer")
+
+    fig = plot([trace1, trace2, trace3])
 end
+
+# simple_plot()
+fig = plot_lambert()
 
 relayout!(fig, scene_aspectmode="data")
 fig
