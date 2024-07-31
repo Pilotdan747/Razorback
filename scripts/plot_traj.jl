@@ -10,33 +10,58 @@ using PlotlyJS
 include("../razorback/planets.jl")
 include("../razorback/kepler.jl")
 
-function plot_planet!(plot, planet)
-    a = sma[planet]
+function plot_planet!(fig, planet)
+    a = sma[planet]*AU
     T = 2*π/sqrt(μ_sun)*a^(3/2)
 
     one_rev = range(0, T, step=86400)
 
-    states = []
+    X = []
+    Y = []
+    Z = []
     for time in one_rev
-        r, v = get_state(planet, time)
-        push!(states, r)
+        r, v = get_state_kep(planet, time)
+        push!(X, r[1]/AU)
+        push!(Y, r[2]/AU)
+        push!(Z, r[3]/AU)
     end
 
+    plan_trace = scatter3d(x=X, y=Y, z=Z, mode="lines", name=planet, aspect_ratio = 1)
+    add_trace!(fig, plan_trace)
 end
 
-function plot_solution!(plot, solution)
-    for arc in solution
-        r = solution["R"][i]
-        v = solution["V"][i]
-        dT = solution["dT"][i]
+function plot_solution!(fig, solution)
+    itinerary = solution.itinerary
+    pos_vec = solution.position_vectors
+    vel_vec = solution.traj_velocities
+    dt_vals = solution.dt_vals
 
-        time_range = range(0, 86400, dT)
+    for i = 1:length(itinerary) - 1
+        r = pos_vec[i]
+        v = vel_vec[i]
+        dT = dt_vals[i]
+
+        planet = itinerary[i]
+        next_planet = itinerary[i + 1]
+
+
+        name = "$planet to $next_planet"
+        println(name)
+
+        time_range = range(0, dT, step=86400)
+
+        X = []
+        Y = []
+        Z = []
         for time in time_range
-            # kep solve with x0 = r, v for dT seconds
-            # add R's to trace
+            r_t, v_t = propogate(r, v, μ_sun, time)
+            push!(X, r_t[1]/AU)
+            push!(Y, r_t[2]/AU)
+            push!(Z, r_t[3]/AU)
         end
          
-        # add trace to plot
+        trace = scatter3d(x = X, y = Y, z = Z, mode = "lines", name = name)
+        add_trace!(fig, trace)
     end
 end
 
@@ -77,4 +102,13 @@ function simple_plot()
     # end
 end
 
-simple_plot()
+# simple_plot()
+fig = plot()
+planets = ["Venus", "Earth", "Jupiter"]
+
+for p in planets
+    plot_planet!(fig, p)
+end
+
+relayout!(fig, scene_aspectmode="data")
+fig

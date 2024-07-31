@@ -7,6 +7,7 @@
 using Metaheuristics
 
 include("../razorback/mga.jl")
+include("plot_traj.jl")
 
 function optum_wrapper(x)
     init_t = x[1]
@@ -17,7 +18,7 @@ function optum_wrapper(x)
         planet = ids[Int(round(id))]
         push!(planets, planet)
     end
-    push!(planets, "Uranus")
+    push!(planets, "Jupiter")
     
     data = generate_mga_data(init_t, dt_vals, planets)
 
@@ -33,14 +34,14 @@ function min_data(x)
         planet = ids[Int(round(x))]
         push!(planets, planet)
     end
-    push!(planets, "Uranus")
+    push!(planets, "Jupiter")
 
     return generate_mga_data(init_t, dt_vals, planets)
 end
 
 function main()
     low_bounds = [25*365.25*86400; 30*86400*ones(4); 2*ones(3)]
-    up_bounds = [35*365.25*86400; 10000*86400*ones(4); 7*ones(3)]
+    up_bounds = [35*365.25*86400; 10000*86400*ones(4); 5*ones(3)]
 
     bounds = boxconstraints(lb = low_bounds, ub = up_bounds)
     # println(bounds)
@@ -66,6 +67,17 @@ function main()
 
     data = min_data(x)
     cost(data, true)
+
+    fig = plot()
+
+    for planet in unique(data.itinerary)
+        plot_planet!(fig, planet)
+    end
+
+    plot_solution!(fig, data)
+
+    relayout!(fig, scene_aspectmode="data")
+    fig
 end
 
-main();
+main()
