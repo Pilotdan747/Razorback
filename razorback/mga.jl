@@ -3,6 +3,8 @@
 # Created: July 5, 2024
 # Edited: July 24, 2024
 
+using JSON
+
 include("lambert.jl")
 include("planets.jl")
 
@@ -61,6 +63,28 @@ struct mga_data
     traj_velocities
     itinerary
     dt_vals
+end
+
+function save_mga_data(data, save_name)
+    j_str = JSON.json(data)
+
+    # TODO how to specify file?
+    save_str = "output/$save_name"
+    f = open("mga_problem.json", "w")
+    write(f, j_str)
+    close(f)
+end
+
+function load_mga_data(file_str)
+    json_dict = JSON.parse(readline(file_str))
+
+    data = mga_data(json_dict["position_vectors"],
+                    json_dict["planet_velocities"],
+                    json_dict["traj_velocities"],
+                    json_dict["itinerary"],
+                    json_dict["dt_vals"])
+
+    return data
 end
 
 function generate_mga_data(init_time, dt_vals, planet)
