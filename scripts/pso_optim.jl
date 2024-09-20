@@ -3,6 +3,9 @@
 # Created: July 5, 2024
 # Edited: July 30, 2024
 
+using Pkg
+Pkg.activate(pwd())
+
 using Metaheuristics
 
 include("../razorback/mga.jl")
@@ -22,6 +25,27 @@ function optum_wrapper(x)
     data = generate_mga_data(init_t, dt_vals, planets)
 
     return cost(data, false)
+end
+
+function optum_wrapper_parallel(x)
+    f = zeros(size(x, 1))
+    Threads.@threads for i in i:size(x, 1)
+        init_t = x[i, 1]
+        dt_vals = x[i, 2:5]
+        
+        planets = ["Earth"]
+        for id in x[i, 6:end]
+            planet = ids[Int(round(id))]
+            push!(planets, planet)
+        end
+        push!(planets, "Jupiter")
+        
+        data = generate_mga_data(init_t, dt_vals, planets)
+
+        f[i] = cost(data, false)
+    end
+
+    return f
 end
 
 function min_data(x)
@@ -45,17 +69,24 @@ function main()
     bounds = boxconstraints(lb = low_bounds, ub = up_bounds)
     # println(bounds)
 
-    options = Options(iterations = 250, f_calls_limit = 1e7, debug = true)
-    alg = PSO(N = 100, options = options)
-    # alg = SA(x_initial = (up_bounds + low_bounds)/2, N = 1000, options = options)
+    options = Options(iterations = 50, f_calls_limit = 1e7, debug = true)
+    alg = PSO(N = 2500, options = options)
+    # alg = SA(N = 2500, options = options)
     # alg = DE(N = 1000, options = options)
     # alg = ABC(N = 2500, options = options)
     # alg = GA(N = 2500) # Broken
     # alg = ECA(N = 100, options = options)
 
 
-    # f(x) = x^2 + sin(x)
+    # # f(x) = x^2 + sin(x)
+    # if Threads.nthreads() > 1
+    #     result = optimize(optum_wrapper_parallel, bounds, alg)
+    # else
+    #     result = optimize(optum_wrapper, bounds, alg)
+    # end
+
     result = optimize(optum_wrapper, bounds, alg)
+
     println(result)
 
     x = minimizer(result)
@@ -67,16 +98,33 @@ function main()
     data = min_data(x)
     cost(data, true)
 
+    save_name = ""
+    for planet in data.itinerary
+        if planet == data.itinerary[end]
+            save_name = save_name + "$planet"
+        else
+            save_name = save_name + "$planet _"
+        end
+    end
+
+    save_mga_data(data, save_name)
+
     fig = plot()
 
     for planet in unique(data.itinerary)
         plot_planet!(fig, planet)
     end
 
+
+
     plot_solution!(fig, data)
 
     relayout!(fig, scene_aspectmode="data")
-    fig
+    savefig(fig, "mga_traj.png")
+    
+    html_file = open("mga_traj.html", "w")
+    PlotlyBase.to_html(html_file, fig)
+    close(html_file)
 end
 
 main()
